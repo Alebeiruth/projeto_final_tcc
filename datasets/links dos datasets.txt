@@ -1,0 +1,8 @@
+JAFFE
+https://zenodo.org/records/14974867
+
+ck+
+https://www.kaggle.com/datasets/shuvoalok/ck-dataset
+
+FER2013
+https://www.kaggle.com/datasets/ashishpatel26/facial-expression-recognitionferchallenge

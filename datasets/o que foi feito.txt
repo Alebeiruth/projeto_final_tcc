@@ -1,0 +1,3 @@
+para o JAFFE foi separado nas pastas de cada sentimento.
+
+FEr2013 foi convertido de csv para png e separado em cada pasta de sentimento
