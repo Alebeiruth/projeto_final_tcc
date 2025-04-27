@@ -1,3 +1,8 @@
 para o JAFFE foi separado nas pastas de cada sentimento.
 
 FEr2013 foi convertido de csv para png e separado em cada pasta de sentimento
+
+criado as pastas mix_ck_fer2013, mix_jaffe_fer2013 e mix_jaffe_ck, no untuito de
+unir todos os dataset com a tecninica de estratificação, com isso feito um codigo
+para essa tecnica, criando pastas com essa união proposta, separando os sentimentos
+e depois em treino e teste
