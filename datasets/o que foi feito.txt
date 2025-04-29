@@ -8,3 +8,8 @@ para essa tecnica, criando pastas com essa união proposta, separando os sentime
 e depois em treino e teste
 
 foi feito ocodigo do SVM com PCA, teste 20 e treino 80, validacao com crosso validation, usando dataset JAFFE
+
+
+transformacao dos dados dobanco de dados JAFFE em png, retirada do codigo SVM + PCA sobre transforma em escala cinza, desnecessario para esse tipo de dados
+pois ja esta nesta escala
+

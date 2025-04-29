@@ -6,6 +6,8 @@ from sklearn.metrics import classification_report, confusion_matrix
 from sklearn.preprocessing import LabelEncoder
 from sklearn.decomposition import PCA
 from PIL import Image
+import time
+import psutil
 
 # Configuracoes
 dataset_dir = ".\datasets\jaffe"
@@ -24,7 +26,7 @@ for label_name in os.listdir(dataset_dir):
         for img_file in os.listdir(label_path):
             img_path = os.path.join(label_path, img_file)
             try:
-                img = Image.open(img_path).covert("L")  # Converte para escala de cinza
+                img = Image.open(img_path)
                 img = img.resize(image_size)  # Redimensiona a imagem
                 img_array = np.array(img).ravel()
                 x.append(img_array)
@@ -46,7 +48,7 @@ x_train, x_test, y_train, y_test = train_test_split(x, y_encoded, test_size=0.2,
 
 # Aplicar PCA
 print("Aplicando PCA...")
-pca = PCA(n_components=pca_components, whithen=True, random_state=42)
+pca = PCA(n_components=pca_components, whiten=True, random_state=42)
 x_train_pca = pca.fit_transform(x_train)
 x_test_pca = pca.transform(x_test)
 
