@@ -13,3 +13,12 @@ foi feito ocodigo do SVM com PCA, teste 20 e treino 80, validacao com crosso val
 transformacao dos dados dobanco de dados JAFFE em png, retirada do codigo SVM + PCA sobre transforma em escala cinza, desnecessario para esse tipo de dados
 pois ja esta nesta escala
 
+AFFE:
+ foi separado nas pastas de cada sentimento.
+ formato da imagem foi convertido de tilf para png.
+ 
+ 
+FER2013:
+ formato da imagem foi convertido de csv para png.
+ separado em cada pasta de sentimento.
+ foi feito uma subpasta test e train 80/20 para cada sentimento.
