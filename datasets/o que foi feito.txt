@@ -6,3 +6,5 @@ criado as pastas mix_ck_fer2013, mix_jaffe_fer2013 e mix_jaffe_ck, no untuito de
 unir todos os dataset com a tecninica de estratificação, com isso feito um codigo
 para essa tecnica, criando pastas com essa união proposta, separando os sentimentos
 e depois em treino e teste
+
+foi feito ocodigo do SVM com PCA, teste 20 e treino 80, validacao com crosso validation, usando dataset JAFFE
