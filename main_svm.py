@@ -4,8 +4,8 @@ from sklearn.model_selection import train_test_split, cross_val_score
 from sklearn.svm import SVC
 from sklearn.metrics import classification_report, confusion_matrix
 from sklearn.preprocessing import LabelEncoder
-from sklearn.decomposition import PCA
-from PIL import Image
+from sklearn.decomposition import PCA #LPB LOCAL BINARY concatena HOG e PCA
+from PIL import Image # PROCESSAR e EQUALIZAR A FACE SOMENTE E QUALIZACAO DO HISTOGRAMA > OPEN CVZ
 import time
 import psutil
 
