@@ -11,7 +11,7 @@ import psutil
 
 # Configuracoes
 dataset_dir = ".\datasets\jaffe"
-image_size = (64, 64)  # Tamanho das imagens
+image_size = (48, 48)  # Tamanho das imagens treinar 48x48 e 256x256
 pca_components = 100  # Número de componentes principais para PCA
 
 # Carrega imagens e labels
