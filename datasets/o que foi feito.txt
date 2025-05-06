@@ -1,24 +1,21 @@
-para o JAFFE foi separado nas pastas de cada sentimento.
-
-FEr2013 foi convertido de csv para png e separado em cada pasta de sentimento
-
-criado as pastas mix_ck_fer2013, mix_jaffe_fer2013 e mix_jaffe_ck, no untuito de
-unir todos os dataset com a tecninica de estratificação, com isso feito um codigo
-para essa tecnica, criando pastas com essa união proposta, separando os sentimentos
-e depois em treino e teste
-
-foi feito ocodigo do SVM com PCA, teste 20 e treino 80, validacao com crosso validation, usando dataset JAFFE
-
-
-transformacao dos dados dobanco de dados JAFFE em png, retirada do codigo SVM + PCA sobre transforma em escala cinza, desnecessario para esse tipo de dados
-pois ja esta nesta escala
-
-AFFE:
+JAFFE:
  foi separado nas pastas de cada sentimento.
  formato da imagem foi convertido de tilf para png.
- 
+ Sabendo que cada individuo tem 3 imagens para cada sentimento foi aplicado técnica LOSO(Leave-One-Subject-Out),depois de separar cada pessoa, foi usada 7 pessoas para treino e 3 pessoas para teste, assim separando 70% treino e 30%  teste.
  
 FER2013:
  formato da imagem foi convertido de csv para png.
  separado em cada pasta de sentimento.
  foi feito uma subpasta test e train 80/20 para cada sentimento.
+
+criado as pastas mix_ck_fer2013, mix_jaffe_fer2013 e mix_jaffe_ck, no intuito de
+unir todos os dataset com a técnica de estratificação, com isso feito um código
+para essa técnica, criando pastas com essa união proposta, separando os sentimentos
+e depois em treino e teste
+
+foi feito o código do SVM com PCA, teste 20 e treino 80, validação com cross validation, usando dataset JAFFE
+
+
+transformação dos dados do banco de dados JAFFE em png, retirada do código SVM + PCA sobre transforma em escala cinza, desnecessário para esse tipo de dados
+pois já esta nesta escala
+
