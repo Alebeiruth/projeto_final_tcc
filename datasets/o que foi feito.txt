@@ -10,6 +10,7 @@ FER2013:
 
 ck+:
  Foi utilizado LOSO(Leave-One-Subject-Out),depois de separar cada pessoa, foi separado em 80% para treino e 20% para teste.
+ No dataset a mesma pessoa nem sempre aparece em todas emoções, teve que fazer um código melhor para separação 80% e 20% 
 
 criado as pastas mix_ck_fer2013, mix_jaffe_fer2013 e mix_jaffe_ck, no intuito de
 unir todos os dataset com a técnica de estratificação, com isso feito um código

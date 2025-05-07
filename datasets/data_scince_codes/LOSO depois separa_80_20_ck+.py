@@ -4,10 +4,11 @@ import re
 import random
 import shutil
 from pathlib import Path
+from collections import defaultdict
 
 # Define paths
-base_dir = 'ck+'  # Replace with your actual path to the CK+ dataset
-output_dir = 'ck+_LOSO'  # Replace with your desired output directory
+base_dir = 'datasets\ck+'  # Replace with your actual path to the CK+ dataset
+output_dir = 'datasets\ck+_LOSO'  # Replace with your desired output directory
 
 # Create output directories if they don't exist
 os.makedirs(os.path.join(output_dir, 'test'), exist_ok=True)
@@ -16,7 +17,6 @@ os.makedirs(os.path.join(output_dir, 'train'), exist_ok=True)
 # Function to extract subject ID from CK+ filename
 def extract_subject_id(filename):
     # CK+ typically has filenames like S005_001_00000001.png or similar
-    # The first part usually represents the subject ID
     match = re.match(r'S(\d+)_', filename)
     if match:
         return f"S{match.group(1)}"
@@ -25,6 +25,9 @@ def extract_subject_id(filename):
 def perform_single_loso_ck_plus(base_dir, output_dir):
     # Dictionary to store all subject IDs and their files by emotion
     subjects_data = {}
+    
+    # Track subjects per emotion for better distribution
+    emotion_subjects = defaultdict(list)
     
     # Collect all subjects and their files
     for emotion_folder in os.listdir(base_dir):
@@ -42,6 +45,8 @@ def perform_single_loso_ck_plus(base_dir, output_dir):
                     
                     if emotion_folder not in subjects_data[subject_id]:
                         subjects_data[subject_id][emotion_folder] = []
+                        # Add this subject to the emotion_subjects tracker
+                        emotion_subjects[emotion_folder].append(subject_id)
                     
                     subjects_data[subject_id][emotion_folder].append(
                         (os.path.join(emotion_path, file), file)
@@ -49,28 +54,51 @@ def perform_single_loso_ck_plus(base_dir, output_dir):
     
     # Get all unique subject IDs
     all_subjects = list(subjects_data.keys())
-    print(f"Found {len(all_subjects)} unique subjects: {', '.join(all_subjects[:10])}...")
+    print(f"Found {len(all_subjects)} unique subjects")
+    
+    # Print statistics about emotions and subjects
+    for emotion, subjects in emotion_subjects.items():
+        print(f"Emotion: {emotion} - {len(subjects)} subjects")
     
     # Select one subject to leave out for LOSO
-    left_out_subject = random.choice(all_subjects)
+    # Choose a subject that appears in multiple emotions for better coverage
+    subject_emotion_counts = {subject: len(subjects_data[subject]) for subject in all_subjects}
+    subjects_sorted = sorted(subject_emotion_counts.items(), key=lambda x: x[1], reverse=True)
+    left_out_subject = subjects_sorted[0][0]  # Subject with most emotions
     
-    # Get remaining subjects (excluding the left-out subject)
-    remaining_subjects = [s for s in all_subjects if s != left_out_subject]
+    print(f"Selected left-out subject (LOSO): {left_out_subject} (appears in {subject_emotion_counts[left_out_subject]} emotions)")
     
-    # Randomly select 20% of remaining subjects for testing 
-    num_test_subjects = max(2, int(0.2 * len(all_subjects)))
-    test_subjects = random.sample(remaining_subjects, num_test_subjects)
+    # Strategy: For each emotion, ensure there are at least 2 subjects in test set
+    # First, gather subjects for test (including left-out subject)
+    test_subjects = [left_out_subject]
+    train_subjects = []
     
-    # The rest go to training
-    train_subjects = [s for s in remaining_subjects if s not in test_subjects]
+    # For each emotion, ensure we have at least 2 subjects in test
+    for emotion, emotion_subject_list in emotion_subjects.items():
+        # Check how many subjects already in test_subjects have this emotion
+        test_subjects_with_emotion = [s for s in test_subjects if s in emotion_subject_list]
+        
+        # If fewer than 2 test subjects have this emotion, add more
+        if len(test_subjects_with_emotion) < 7:
+            # Find subjects not already in test_subjects that have this emotion
+            available_subjects = [s for s in emotion_subject_list if s != left_out_subject and s not in test_subjects]
+            
+            # How many more do we need to reach at least 2?
+            num_needed = 7 - len(test_subjects_with_emotion)
+            
+            if available_subjects and num_needed > 0:
+                # Add as many as we can up to num_needed
+                additional_subjects = random.sample(available_subjects, min(num_needed, len(available_subjects)))
+                test_subjects.extend(additional_subjects)
     
-    print(f"Left-out subject (LOSO): {left_out_subject}")
-    print(f"Additional test subjects: {', '.join(test_subjects[:5])}...")
-    print(f"Train subjects: {', '.join(train_subjects[:5])}...")
+    # Finalize the train set (everyone not in test)
+    train_subjects = [s for s in all_subjects if s not in test_subjects]
+    
+    print(f"Test subjects: {len(test_subjects)} subjects")
+    print(f"Train subjects: {len(train_subjects)} subjects")
     
     # Copy left-out subject + test subjects files to test directory
-    test_subjects_all = [left_out_subject] + test_subjects
-    for subject in test_subjects_all:
+    for subject in test_subjects:
         if subject in subjects_data:
             for emotion, files in subjects_data[subject].items():
                 for file_path, filename in files:
@@ -85,15 +113,26 @@ def perform_single_loso_ck_plus(base_dir, output_dir):
                     dest_path = os.path.join(output_dir, 'train', emotion, filename)
                     shutil.copy2(file_path, dest_path)
     
-    # Count files for reporting
-    test_files = sum(len(os.listdir(os.path.join(output_dir, 'test', emotion))) 
-                     for emotion in os.listdir(os.path.join(output_dir, 'test')))
-    train_files = sum(len(os.listdir(os.path.join(output_dir, 'train', emotion))) 
-                      for emotion in os.listdir(os.path.join(output_dir, 'train')))
+    # Count files per emotion for reporting
+    print("\nDistribution of files:")
+    print("EMOTION\t\tTEST\tTRAIN")
+    print("-" * 30)
+    total_test = 0
+    total_train = 0
     
-    print("LOSO and subject-based train/test split completed")
-    print(f"Test set: {len(test_subjects_all)} subjects with {test_files} files")
-    print(f"Train set: {len(train_subjects)} subjects with {train_files} files")
+    for emotion in os.listdir(os.path.join(output_dir, 'test')):
+        if os.path.isdir(os.path.join(output_dir, 'test', emotion)):
+            test_count = len(os.listdir(os.path.join(output_dir, 'test', emotion)))
+            train_count = len(os.listdir(os.path.join(output_dir, 'train', emotion)))
+            print(f"{emotion:<15}{test_count:>5}\t{train_count:>5}")
+            total_test += test_count
+            total_train += train_count
+    
+    print("-" * 30)
+    print(f"TOTAL\t\t{total_test:>5}\t{total_train:>5}")
+    
+    print("\nLOSO and subject-based train/test split completed")
+    print(f"Overall split: {total_test/(total_test+total_train)*100:.1f}% test, {total_train/(total_test+total_train)*100:.1f}% train")
 
 if __name__ == "__main__":
     random.seed(42)  # For reproducibility
