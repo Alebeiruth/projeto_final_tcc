@@ -6,3 +6,6 @@ https://www.kaggle.com/datasets/shuvoalok/ck-dataset
 
 FER2013
 https://www.kaggle.com/datasets/ashishpatel26/facial-expression-recognitionferchallenge
+
+RAF-DB:
+https://www.kaggle.com/datasets/shuvoalok/raf-db-dataset
